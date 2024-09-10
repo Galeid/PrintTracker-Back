@@ -18,6 +18,9 @@ import { GastosModule } from './gastos/gastos.module';
 import { Gasto } from './gastos/entities/gasto.entity';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { Pedido } from './pedidos/entities/pedido.entity';
+import { UsuariosService } from './usuarios/usuarios.service';
+import { RegistrosModule } from './registros/registros.module';
+import { Registro } from './registros/entities/registro.entity';
 
 @Module({
   imports: [
@@ -32,7 +35,8 @@ import { Pedido } from './pedidos/entities/pedido.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [Usuario, Cliente, Proveedor, Caja, Gasto, Pedido],
+        entities: [Usuario, Cliente, Proveedor, Caja, Gasto, Pedido,Registro
+        ],
         synchronize: true,
       }),
     }),
@@ -41,7 +45,8 @@ import { Pedido } from './pedidos/entities/pedido.entity';
     ProveedorModule,
     CajaModule,
     GastosModule,
-    PedidosModule
+    PedidosModule,
+    RegistrosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

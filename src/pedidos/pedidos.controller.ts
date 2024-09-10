@@ -17,6 +17,11 @@ export class PedidosController {
     return this.pedidosService.findAll();
   }
 
+  @Get('pagar/:id')
+  pay(@Param('id') id: string) {
+    return this.pedidosService.pay(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.pedidosService.findOne(id);

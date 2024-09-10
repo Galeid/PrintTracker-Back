@@ -13,6 +13,18 @@ export class UsuariosService {
     private usuarioRepository: Repository<Usuario>,
   ) {}
 
+  async login(username, password) {
+    const userFound = await this.usuarioRepository.findOne({
+      where: { usuario: username },
+      select: ['id', 'usuario', 'contrasena'],
+    });
+    if (!userFound || userFound.contrasena !== password) {
+      return null;
+    } else {
+      return userFound;
+    }
+  }
+
   async create(createUsuarioDto: CreateUsuarioDto) {
     const usuario = await this.usuarioRepository.create({
       ...createUsuarioDto,

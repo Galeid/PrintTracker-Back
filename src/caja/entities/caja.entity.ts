@@ -15,10 +15,15 @@ export class Caja {
   pendiente: number;
 
   @Column({ type: 'decimal', scale: 2 })
-  ingresosTD: number;
+  cuentaTD: number;
+  @Column({ type: 'decimal', scale: 2 })
+  efectivoTD: number;
 
   @Column({ type: 'decimal', scale: 2 })
-  gastosTD: number;
+  gastosEfectivoTD: number;
+
+  @Column({ type: 'decimal', scale: 2 })
+  gastosCuentaTD: number;
 
   @Column({ type: 'decimal', scale: 2 })
   pendientesTD: number;

@@ -2,8 +2,10 @@ export class CreateCajaDto {
   cuenta: number;
   efectivo: number;
   pendiente: number;
-  ingresosTD: number;
-  gastosTD: number;
+  cuentaTD: number;
+  efectivoTD: number;
+  gastosEfectivoTD: number;
+  gastosCuentaTD: number;
   pendientesTD: number;
   pendPagadosTD: number;
 }

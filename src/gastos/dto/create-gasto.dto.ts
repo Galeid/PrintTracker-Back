@@ -10,4 +10,6 @@ export class CreateGastoDto {
   nroFactura?: string;
   pago: TipoPago;
   fecha: Date;
+  idUsuario: string;
+  idProveedor: string;
 }

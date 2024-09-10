@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Gasto } from "../../gastos/entities/gasto.entity";
 
 @Entity({ name: 'proveedores' })
 export class Proveedor {
@@ -25,4 +26,7 @@ export class Proveedor {
 
   @UpdateDateColumn({ type: 'timestamptz', precision: 3 })
   updated_at: Date;
+
+  @OneToMany(() => Gasto, (gastos) => gastos.proveedor)
+  gastos: Gasto[]
 }

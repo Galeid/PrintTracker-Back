@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Gasto } from '../../gastos/entities/gasto.entity';
 import { Pedido } from '../../pedidos/entities/pedido.entity';
+import { Registro } from '../../registros/entities/registro.entity';
 
 export enum UsuarioRol {
   ADMIN = 'admin',
@@ -46,4 +47,7 @@ export class Usuario {
 
   @OneToMany(() => Pedido, (pedidos) => pedidos.usuario)
   pedidos: Pedido[]
+
+  @OneToMany(() => Registro, (registros) => registros.usuario)
+  registros: Registro[]
 }

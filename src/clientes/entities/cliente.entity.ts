@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Pedido } from '../../pedidos/entities/pedido.entity';
 
 @Entity({ name: 'clientes' })
 export class Cliente {
@@ -37,4 +39,7 @@ export class Cliente {
 
   @UpdateDateColumn({ type: 'timestamptz', precision: 3 })
   updated_at: Date;
+
+  @OneToMany(() => Pedido, (pedidos) => pedidos.cliente)
+  pedidos: Pedido[]
 }

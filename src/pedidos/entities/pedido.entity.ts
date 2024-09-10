@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Generated, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Usuario } from "../../usuarios/entities/usuario.entity";
+import { Cliente } from "../../clientes/entities/cliente.entity";
 
 export enum TipoPedido {
   TARJETAS = 'tarjetas',
@@ -38,8 +39,9 @@ export class Pedido {
   @Column({ type: 'decimal', scale: 2 })
   monto: number;
 
-  @Column({ type: 'varchar', length: 15, unique: true })
-  nroPedido: string;
+  @Column({ type: 'int', unique: true })
+  @Generated('increment')
+  nroPedido: number;
 
   @Column({ type: 'enum', enum: TipoPedido, default: TipoPedido.OTRO })
   tipo: TipoPedido;
@@ -47,10 +49,10 @@ export class Pedido {
   @Column({ type: 'enum', enum: TipoPago, default: TipoPago.EFECTIVO })
   tipoPago: TipoPago;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'timestamptz' })
   fecha: Date;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'timestamptz', nullable: true })
   fechaPago: Date;
 
   @Column({ type: 'enum', enum: EstadoPedido, default: EstadoPedido.PENDIENTE })
@@ -67,4 +69,7 @@ export class Pedido {
 
   @ManyToOne(() => Usuario, (usuario) => usuario.pedidos)
   usuario: Usuario
+
+  @ManyToOne(() => Cliente, (cliente) => cliente.pedidos)
+  cliente: Cliente
 }

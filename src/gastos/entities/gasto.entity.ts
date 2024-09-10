@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Usuario } from "../../usuarios/entities/usuario.entity";
+import { Proveedor } from "../../proveedor/entities/proveedor.entity";
 
 export enum TipoPago {
   EFECTIVO = 'efectivo',
@@ -24,7 +25,7 @@ export class Gasto {
   @Column({ type: 'enum', enum: TipoPago, default: TipoPago.EFECTIVO })
   tipoPago: TipoPago;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'timestamptz' })
   fecha: Date;
 
   @CreateDateColumn({ type: 'timestamptz', precision: 3 })
@@ -35,4 +36,7 @@ export class Gasto {
 
   @ManyToOne(() => Usuario, (usuario) => usuario.gastos)
   usuario: Usuario
+
+  @ManyToOne(() => Proveedor, (proveedor) => proveedor.gastos)
+  proveedor: Proveedor
 }
