@@ -1,9 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+
 import { CajaService } from './caja.service';
 import { CreateCajaDto } from './dto/create-caja.dto';
 import { UpdateCajaDto } from './dto/update-caja.dto';
 
-@Controller('caja')
+@Controller('cajas')
 export class CajaController {
   constructor(private readonly cajaService: CajaService) {}
 
@@ -19,7 +28,7 @@ export class CajaController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.cajaService.findOne(id);
+    return this.cajaService.findOneById(id);
   }
 
   @Patch(':id')

@@ -1,10 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 
 import { ProveedorService } from './proveedor.service';
 import { CreateProveedorDto } from './dto/create-proveedor.dto';
 import { UpdateProveedorDto } from './dto/update-proveedor.dto';
 
-@Controller('proveedor')
+@Controller('proveedores')
 export class ProveedorController {
   constructor(private readonly proveedorService: ProveedorService) {}
 
@@ -20,7 +28,7 @@ export class ProveedorController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.proveedorService.findOne(id);
+    return this.proveedorService.findOneById(id);
   }
 
   @Patch(':id')

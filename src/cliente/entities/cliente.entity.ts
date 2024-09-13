@@ -7,30 +7,36 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { Gasto } from '../../gasto/entities/gasto.entity';
+import { Pedido } from '../../pedido/entities/pedido.entity';
 
-@Entity({ name: 'proveedores' })
-export class Proveedor {
+@Entity({ name: 'clientes' })
+export class Cliente {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar', length: 100 })
   nombre: string;
 
-  @Column({ type: 'varchar', length: 15, nullable: true })
+  @Column({ type: 'varchar', length: 15, unique: true })
   ruc: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', length: 100 })
   empresa: string;
 
+  @Column({ type: 'varchar', length: 15 })
+  telefono: string;
+
   @Column({ type: 'varchar', length: 100, nullable: true })
-  rubro: string;
+  correo: string;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  direccion: string;
 
   @Column({ type: 'boolean', default: true })
   estado: boolean;
 
-  @OneToMany(() => Gasto, (gastos) => gastos.proveedor)
-  gastos: Gasto[];
+  @OneToMany(() => Pedido, (pedidos) => pedidos.cliente)
+  pedidos: Pedido[];
 
   @CreateDateColumn({ type: 'timestamptz', precision: 3 })
   created_at: Date;

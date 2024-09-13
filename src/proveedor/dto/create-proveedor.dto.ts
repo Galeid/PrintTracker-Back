@@ -3,4 +3,5 @@ export class CreateProveedorDto {
   ruc?: string;
   empresa?: string;
   rubro?: string;
+  estado?: boolean;
 }

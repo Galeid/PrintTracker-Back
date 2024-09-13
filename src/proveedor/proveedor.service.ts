@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { Proveedor } from './entities/proveedor.entity';
 import { CreateProveedorDto } from './dto/create-proveedor.dto';
 import { UpdateProveedorDto } from './dto/update-proveedor.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Proveedor } from './entities/proveedor.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProveedorService {
@@ -15,9 +16,7 @@ export class ProveedorService {
   async create(createProveedorDto: CreateProveedorDto) {
     const proveedor = await this.proveedorRepository.create({
       ...createProveedorDto,
-      estado: true,
     });
-
     return await this.proveedorRepository.save(proveedor);
   }
 
@@ -25,27 +24,20 @@ export class ProveedorService {
     return await this.proveedorRepository.find({ where: { estado: true } });
   }
 
-  async findOne(id: string) {
+  async findOneById(id: string) {
     return await this.proveedorRepository.findOne({
       where: { id },
     });
   }
 
   async update(id: string, updateProveedorDto: UpdateProveedorDto) {
-    const proveedor = await this.findOne(id);
+    const proveedor = await this.findOneById(id);
     if (!proveedor) throw new NotFoundException();
-
     Object.assign(proveedor, updateProveedorDto);
-
     return await this.proveedorRepository.save(proveedor);
   }
 
   async remove(id: string) {
-    const proveedor = await this.findOne(id);
-    if (!proveedor) throw new NotFoundException();
-
-    Object.assign(proveedor, { estado: false });
-
-    return await this.proveedorRepository.save(proveedor);
+    return await this.update(id, { estado: false });
   }
 }

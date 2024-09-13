@@ -1,6 +1,17 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-@Entity({ name: 'caja' })
+import { Gasto } from '../../gasto/entities/gasto.entity';
+import { Pedido } from '../../pedido/entities/pedido.entity';
+import { Registro } from '../../registro/entities/registro.entity';
+
+@Entity({ name: 'cajas' })
 export class Caja {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -15,24 +26,34 @@ export class Caja {
   pendiente: number;
 
   @Column({ type: 'decimal', scale: 2 })
-  cuentaTD: number;
-  @Column({ type: 'decimal', scale: 2 })
-  efectivoTD: number;
+  cuentaHoy: number;
 
   @Column({ type: 'decimal', scale: 2 })
-  gastosEfectivoTD: number;
+  efectivoHoy: number;
 
   @Column({ type: 'decimal', scale: 2 })
-  gastosCuentaTD: number;
+  gastoCuentaHoy: number;
 
   @Column({ type: 'decimal', scale: 2 })
-  pendientesTD: number;
+  gastoEfectivoHoy: number;
 
   @Column({ type: 'decimal', scale: 2 })
-  pendPagadosTD: number;
+  pendienteHoy: number;
+
+  @Column({ type: 'decimal', scale: 2 })
+  pasadosPagadosHoy: number;
 
   @Column({ type: 'boolean', default: true })
   estado: boolean;
+
+  @OneToMany(() => Gasto, (gastos) => gastos.caja)
+  gastos: Gasto[];
+
+  @OneToMany(() => Pedido, (pedidos) => pedidos.caja)
+  pedidos: Pedido[];
+
+  @OneToMany(() => Registro, (registros) => registros.caja)
+  registros: Registro[];
 
   @CreateDateColumn({ type: 'timestamptz', precision: 3 })
   created_at: Date;
