@@ -12,7 +12,7 @@ export class AuthService {
     const usuario = await this.usuarioService.findOneByUsuario(username);
     if (usuario) {
       const isValid = await bcrypt.compare(password, usuario.contrasena);
-      if (isValid) return true;
+      if (isValid) return usuario;
     }
     throw new UnauthorizedException('Usuario o contraseña incorrectos');
   }

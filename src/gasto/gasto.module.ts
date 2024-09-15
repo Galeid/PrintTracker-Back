@@ -7,6 +7,7 @@ import { GastoController } from './gasto.controller';
 import { UsuarioModule } from '../usuario/usuario.module';
 import { ProveedorModule } from '../proveedor/proveedor.module';
 import { CajaModule } from '../caja/caja.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CajaModule } from '../caja/caja.module';
     UsuarioModule,
     ProveedorModule,
     CajaModule,
+    ConfigModule,
   ],
   controllers: [GastoController],
   providers: [GastoService],

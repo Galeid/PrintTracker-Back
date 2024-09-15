@@ -8,6 +8,7 @@ import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { CajaService } from '../caja/caja.service';
 import { UsuarioService } from '../usuario/usuario.service';
 import { ClienteService } from '../cliente/cliente.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PedidoService {
@@ -18,9 +19,10 @@ export class PedidoService {
     private readonly usuarioService: UsuarioService,
     private readonly clienteService: ClienteService,
     private readonly cajaService: CajaService,
+    private readonly configService: ConfigService,
   ) {}
 
-  cajaId = '8186798b-a60f-46a3-9caa-31703750b83a';
+  cajaId = this.configService.get<string>('CAJA_ID');
 
   async create(createPedidoDto: CreatePedidoDto) {
     const caja = await this.cajaService.findOneById(this.cajaId);
@@ -47,6 +49,8 @@ export class PedidoService {
 
     pedido.usuario = await this.usuarioService.findOneById(createPedidoDto.idUsuario)
     pedido.cliente = await this.clienteService.findOneById(createPedidoDto.idCliente)
+    pedido.caja = caja
+
     return await this.pedidoRepository.save(pedido);
   }
 

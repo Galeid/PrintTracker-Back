@@ -8,12 +8,14 @@ import { RegistroService } from './registro.service';
 import { RegistroController } from './registro.controller';
 import { CajaModule } from '../caja/caja.module';
 import { UsuarioModule } from '../usuario/usuario.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Registro, Pedido, Gasto]),
     CajaModule,
     UsuarioModule,
+    ConfigModule,
   ],
   controllers: [RegistroController],
   providers: [RegistroService],

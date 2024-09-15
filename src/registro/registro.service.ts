@@ -9,6 +9,7 @@ import { CreateRegistroDto } from './dto/create-registro.dto';
 import { UpdateRegistroDto } from './dto/update-registro.dto';
 import { CajaService } from '../caja/caja.service';
 import { UsuarioService } from '../usuario/usuario.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RegistroService {
@@ -24,9 +25,10 @@ export class RegistroService {
 
     private readonly usuarioService: UsuarioService,
     private readonly cajaService: CajaService,
+    private readonly configService: ConfigService,
   ) {}
 
-  cajaId = '8186798b-a60f-46a3-9caa-31703750b83a';
+  cajaId = this.configService.get<string>('CAJA_ID');
 
   async create(createRegistroDto: CreateRegistroDto) {
     const caja = await this.cajaService.findOneById(this.cajaId);

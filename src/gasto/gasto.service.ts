@@ -8,6 +8,7 @@ import { CreateGastoDto } from './dto/create-gasto.dto';
 import { UpdateGastoDto } from './dto/update-gasto.dto';
 import { UsuarioService } from '../usuario/usuario.service';
 import { ProveedorService } from '../proveedor/proveedor.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GastoService {
@@ -18,9 +19,10 @@ export class GastoService {
     private readonly usuarioService: UsuarioService,
     private readonly proveedorService: ProveedorService,
     private readonly cajaService: CajaService,
+    private readonly configService: ConfigService,
   ) {}
 
-  cajaId = '8186798b-a60f-46a3-9caa-31703750b83a';
+  cajaId = this.configService.get<string>('CAJA_ID');
 
   async create(createGastoDto: CreateGastoDto) {
     const caja = await this.cajaService.findOneById(this.cajaId);
@@ -59,6 +61,7 @@ export class GastoService {
 
     gasto.usuario = await this.usuarioService.findOneById(createGastoDto.idUsuario)
     gasto.proveedor = await this.proveedorService.findOneById(createGastoDto.idProveedor)
+    gasto.caja = caja
 
     return await this.gastoRepository.save(gasto);
   }

@@ -7,6 +7,7 @@ import { PedidoController } from './pedido.controller';
 import { UsuarioModule } from '../usuario/usuario.module';
 import { CajaModule } from '../caja/caja.module';
 import { ClienteModule } from '../cliente/cliente.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ClienteModule } from '../cliente/cliente.module';
     UsuarioModule,
     ClienteModule,
     CajaModule,
+    ConfigModule
   ],
   controllers: [PedidoController],
   providers: [PedidoService],

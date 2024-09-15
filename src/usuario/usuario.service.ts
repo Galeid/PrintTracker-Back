@@ -35,6 +35,14 @@ export class UsuarioService {
   async findOneByUsuario(usuario: string) {
     return await this.usuarioRepository.findOne({
       where: { usuario },
+      select: {
+        id:true,
+        usuario:true,
+        contrasena: true,
+        rol: true,
+        nombre: true,
+        estado: true,
+      }
     });
   }
 
