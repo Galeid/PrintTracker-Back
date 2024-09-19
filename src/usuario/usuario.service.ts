@@ -36,13 +36,13 @@ export class UsuarioService {
     return await this.usuarioRepository.findOne({
       where: { usuario },
       select: {
-        id:true,
-        usuario:true,
+        id: true,
+        usuario: true,
         contrasena: true,
         rol: true,
         nombre: true,
         estado: true,
-      }
+      },
     });
   }
 
