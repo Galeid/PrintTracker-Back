@@ -5,13 +5,17 @@ import { Repository } from 'typeorm';
 import { Caja } from './entities/caja.entity';
 import { CreateCajaDto } from './dto/create-caja.dto';
 import { UpdateCajaDto } from './dto/update-caja.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CajaService {
   constructor(
     @InjectRepository(Caja)
     private cajaRepository: Repository<Caja>,
+    private readonly configService: ConfigService,
   ) {}
+
+  cajaId = this.configService.get<string>('CAJA_ID');
 
   async create(createCajaDto: CreateCajaDto) {
     const caja = await this.cajaRepository.create({
@@ -26,7 +30,7 @@ export class CajaService {
 
   async findOneById(id: string) {
     return await this.cajaRepository.findOne({
-      where: { id },
+      where: { id: this.cajaId },
     });
   }
 

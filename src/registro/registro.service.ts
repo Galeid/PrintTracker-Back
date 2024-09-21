@@ -129,8 +129,8 @@ export class RegistroService {
     return await this.registroRepository.save(registro);
   }
 
-  findAll() {
-    return `This action returns all registros`;
+  async findAll() {
+    return await this.registroRepository.find();
   }
 
   findOne(id: number) {
