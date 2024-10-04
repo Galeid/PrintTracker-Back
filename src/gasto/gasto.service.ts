@@ -59,9 +59,13 @@ export class GastoService {
       tipoPago: createGastoDto.tipoPago,
     });
 
-    gasto.usuario = await this.usuarioService.findOneById(createGastoDto.idUsuario)
-    gasto.proveedor = await this.proveedorService.findOneById(createGastoDto.idProveedor)
-    gasto.caja = caja
+    gasto.usuario = await this.usuarioService.findOneById(
+      createGastoDto.idUsuario,
+    );
+    gasto.proveedor = await this.proveedorService.findOneById(
+      createGastoDto.idProveedor,
+    );
+    gasto.caja = caja;
 
     return await this.gastoRepository.save(gasto);
   }
@@ -70,7 +74,7 @@ export class GastoService {
     return await this.gastoRepository.find({
       relations: { proveedor: true },
       select: {
-        proveedor: { nombre: true },
+        proveedor: { nombre: true, rubro: true },
       },
     });
   }

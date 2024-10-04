@@ -132,6 +132,6 @@ export class PedidoService {
     pedido.estadoPago = EstadoPago.PAGADO;
     pedido.fechaPago = new Date();
 
-    await this.pedidoRepository.save(pedido);
+    return await this.pedidoRepository.save(pedido);
   }
 }
