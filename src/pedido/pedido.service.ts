@@ -65,6 +65,20 @@ export class PedidoService {
     });
   }
 
+  async findByCliente(id:string) {
+    return await this.pedidoRepository.find({
+      where: {
+        cliente: { id: id}
+      },
+      relations: {
+        cliente: true,
+      },
+      select: {
+        cliente: { nombre: true },
+      },
+    });
+  }
+
   async findOne(id: string) {
     return await this.pedidoRepository.findOne({
       where: { id },

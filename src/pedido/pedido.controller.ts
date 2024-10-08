@@ -26,6 +26,11 @@ export class PedidoController {
     return this.pedidoService.findAll();
   }
 
+  @Get('cliente/:id')
+  findByCliente(@Param('id') id: string) {
+    return this.pedidoService.findByCliente(id);
+  }
+
   @Get('pagar/:id')
   pay(@Param('id') id: string) {
     return this.pedidoService.pay(id);
