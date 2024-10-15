@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { EstadoPago, EstadoPedido, Pedido } from './entities/pedido.entity';
+import { EstadoPago, EstadoPedido, Pedido, TipoPago } from './entities/pedido.entity';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { CajaService } from '../caja/caja.service';
@@ -79,14 +79,14 @@ export class PedidoService {
     });
   }
 
-  async findOne(id: string) {
+  async findOneById(id: string) {
     return await this.pedidoRepository.findOne({
       where: { id },
     });
   }
 
   async update(id: string, updatePedidoDto: UpdatePedidoDto) {
-    const pedido = await this.findOne(id);
+    const pedido = await this.findOneById(id);
     if (!pedido) throw new NotFoundException();
 
     Object.assign(pedido, updatePedidoDto);
@@ -95,7 +95,7 @@ export class PedidoService {
   }
 
   async remove(id: string) {
-    const pedido = await this.findOne(id);
+    const pedido = await this.findOneById(id);
     if (!pedido) throw new NotFoundException();
 
     Object.assign(pedido, { estadoPedido: EstadoPedido.ANULADO });
@@ -103,8 +103,8 @@ export class PedidoService {
     return await this.pedidoRepository.remove(pedido);
   }
 
-  async pay(id: string) {
-    const pedido = await this.findOne(id);
+  async pay(id: string, tipoPago: TipoPago) {
+    const pedido = await this.findOneById(id);
     if (!pedido) throw new NotFoundException();
 
     const caja = await this.cajaService.findOneById(this.cajaId);
@@ -112,7 +112,7 @@ export class PedidoService {
     caja.pendiente = parseFloat(
       (Number(caja.pendiente) - Number(pedido.monto)).toFixed(2),
     );
-    if (pedido.tipoPago === 'efectivo') {
+    if (tipoPago === 'efectivo') {
       caja.efectivo = parseFloat(
         (Number(caja.efectivo) + Number(pedido.monto)).toFixed(2),
       );
@@ -143,6 +143,7 @@ export class PedidoService {
 
     await this.cajaService.update(this.cajaId, caja);
 
+    pedido.tipoPago = tipoPago;
     pedido.estadoPago = EstadoPago.PAGADO;
     pedido.fechaPago = new Date();
 

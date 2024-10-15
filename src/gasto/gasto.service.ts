@@ -79,6 +79,18 @@ export class GastoService {
     });
   }
 
+  async findByProveedor(id:string) {
+    return await this.gastoRepository.find({
+      where: {
+        proveedor: { id: id}
+      },
+      relations: { proveedor: true },
+      select: {
+        proveedor: { nombre: true, rubro: true },
+      },
+    });
+  }
+
   async findOneById(id: string) {
     return await this.gastoRepository.findOne({
       where: { id },

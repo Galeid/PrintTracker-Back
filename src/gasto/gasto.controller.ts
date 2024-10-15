@@ -26,6 +26,11 @@ export class GastoController {
     return this.gastoService.findAll();
   }
 
+  @Get('proveedor/:id')
+  findByProveedor(@Param('id') id: string) {
+    return this.gastoService.findByProveedor(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.gastoService.findOneById(id);

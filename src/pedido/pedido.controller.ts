@@ -11,6 +11,7 @@ import {
 import { PedidoService } from './pedido.service';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
+import { TipoPago } from './entities/pedido.entity';
 
 @Controller('pedidos')
 export class PedidoController {
@@ -31,14 +32,14 @@ export class PedidoController {
     return this.pedidoService.findByCliente(id);
   }
 
-  @Get('pagar/:id')
-  pay(@Param('id') id: string) {
-    return this.pedidoService.pay(id);
+  @Patch('pagar/:id')
+  pay(@Param('id') id: string, @Body() bodyPay: {tipoPago:TipoPago}) {
+    return this.pedidoService.pay(id, bodyPay.tipoPago);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.pedidoService.findOne(id);
+    return this.pedidoService.findOneById(id);
   }
 
   @Patch(':id')
