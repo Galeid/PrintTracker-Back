@@ -62,6 +62,9 @@ export class PedidoService {
       select: {
         cliente: { nombre: true },
       },
+      order: {
+        nroPedido: 'DESC'
+      }
     });
   }
 
