@@ -45,13 +45,23 @@ export class RegistroService {
     let efectivoFinal = Number(caja.efectivo);
     let pendienteFinal = Number(caja.pendiente);
 
-    let cuentaInicial =
-      Number(caja.cuenta) - Number(caja.cuentaHoy) + Number(caja.gastoCuentaHoy);
-    let efectivoInicial =
-      Number(caja.efectivo) -
-      Number(caja.efectivoHoy) +
-      Number(caja.gastoEfectivoHoy);
-    let pendienteInicial = Number(caja.pendiente) - Number(caja.pendienteHoy);
+    let cuentaInicial = parseFloat(
+      (
+        Number(caja.cuenta) -
+        Number(caja.cuentaHoy) +
+        Number(caja.gastoCuentaHoy)
+      ).toFixed(2),
+    );
+    let efectivoInicial = parseFloat(
+      (
+        Number(caja.efectivo) -
+        Number(caja.efectivoHoy) +
+        Number(caja.gastoEfectivoHoy)
+      ).toFixed(2),
+    );
+    let pendienteInicial = parseFloat(
+      (Number(caja.pendiente) - Number(caja.pendienteHoy)).toFixed(2),
+    );
 
     let nroPedidos: number = await this.pedidoRepository.count({
       where: {
@@ -123,7 +133,9 @@ export class RegistroService {
     caja.pendienteHoy = 0;
     caja.pasadosPagadosHoy = 0;
 
-    registro.usuario = await this.usuarioService.findOneById(createRegistroDto.idUsuario)
+    registro.usuario = await this.usuarioService.findOneById(
+      createRegistroDto.idUsuario,
+    );
     registro.caja = await this.cajaService.update(this.cajaId, caja);
 
     return await this.registroRepository.save(registro);
