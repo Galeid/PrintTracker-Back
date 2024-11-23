@@ -1,4 +1,4 @@
-import { UsuarioRol } from '../entities/usuario.entity';
+import { UsuarioRol } from "../enums/UsuarioRol";
 
 export class CreateUsuarioDto {
   usuario: string;

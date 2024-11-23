@@ -9,13 +9,9 @@ import {
 
 import { Usuario } from '../../usuario/entities/usuario.entity';
 import { Proveedor } from '../../proveedor/entities/proveedor.entity';
-import { Caja } from '../../caja/entities/caja.entity';
+import { Sucursal } from '../../sucursal/entities/sucursal.entity';
 
-export enum TipoPago {
-  EFECTIVO = 'efectivo',
-  YAPE = 'yape',
-  TRANSFERENCIA = 'transferencia',
-}
+import { TipoGasto } from '../enums/TipoGasto';
 
 @Entity({ name: 'gastos' })
 export class Gasto {
@@ -31,20 +27,20 @@ export class Gasto {
   @Column({ type: 'varchar', length: 15, nullable: true })
   nroFactura: string;
 
-  @Column({ type: 'enum', enum: TipoPago, default: TipoPago.EFECTIVO })
-  tipoPago: TipoPago;
-
   @Column({ type: 'timestamptz' })
   fecha: Date;
+
+  @Column({ type: 'enum', enum: TipoGasto, default: TipoGasto.OTROS })
+  tipo: TipoGasto;
+
+  @ManyToOne(() => Sucursal, (sucursal) => sucursal.gastos)
+  sucursal: Sucursal;
 
   @ManyToOne(() => Usuario, (usuario) => usuario.gastos)
   usuario: Usuario;
 
   @ManyToOne(() => Proveedor, (proveedor) => proveedor.gastos)
   proveedor: Proveedor;
-
-  @ManyToOne(() => Caja, (caja) => caja.gastos)
-  caja: Caja;
 
   @CreateDateColumn({ type: 'timestamptz', precision: 3 })
   created_at: Date;

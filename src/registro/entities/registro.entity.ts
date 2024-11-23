@@ -8,48 +8,39 @@ import {
 } from 'typeorm';
 
 import { Usuario } from '../../usuario/entities/usuario.entity';
-import { Caja } from '../../caja/entities/caja.entity';
+import { Sucursal } from '../../sucursal/entities/sucursal.entity';
 
 @Entity({ name: 'registros' })
 export class Registro {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'decimal', scale: 2 })
-  cuentaInicial: number;
+  @Column({ type: 'decimal', scale: 2, default: 0 })
+  principalInicial: number;
 
-  @Column({ type: 'decimal', scale: 2 })
-  cuentaFinal: number;
+  @Column({ type: 'decimal', scale: 2, default: 0 })
+  principalFinal: number;
 
-  @Column({ type: 'decimal', scale: 2 })
-  efectivoInicial: number;
-
-  @Column({ type: 'decimal', scale: 2 })
-  efectivoFinal: number;
-
-  @Column({ type: 'decimal', scale: 2 })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   pendienteInicial: number;
 
-  @Column({ type: 'decimal', scale: 2 })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   pendienteFinal: number;
 
-  @Column({ type: 'decimal', scale: 2 })
-  ingresosCuentaTotal: number;
+  @Column({ type: 'decimal', scale: 2, default: 0 })
+  ingresosTotal: number;
 
-  @Column({ type: 'decimal', scale: 2 })
-  ingresosEfectivoTotal: number;
+  @Column({ type: 'decimal', scale: 2, default: 0 })
+  salidasTotal: number;
 
-  @Column({ type: 'decimal', scale: 2 })
-  gastosCuentaTotal: number;
+  @Column({ type: 'decimal', scale: 2, default: 0 })
+  pendienteHoy: number;
 
-  @Column({ type: 'decimal', scale: 2 })
-  gastosEfectivoTotal: number;
-
-  @Column({ type: 'decimal', scale: 2 })
-  pendientesHoy: number;
-
-  @Column({ type: 'decimal', scale: 2 })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   pasadosPagados: number;
+
+  @Column({ type: 'decimal', scale: 2, default: 0 })
+  secundario: number;
 
   @Column({ type: 'int' })
   nroPedidos: number;
@@ -66,11 +57,11 @@ export class Registro {
   @Column({ type: 'timestamptz' })
   fecha: Date;
 
+  @ManyToOne(() => Sucursal, (sucursal) => sucursal.registros)
+  sucursal: Sucursal;
+
   @ManyToOne(() => Usuario, (usuario) => usuario.registros)
   usuario: Usuario;
-
-  @ManyToOne(() => Caja, (caja) => caja.registros)
-  caja: Caja;
 
   @CreateDateColumn({ type: 'timestamptz', precision: 3 })
   created_at: Date;

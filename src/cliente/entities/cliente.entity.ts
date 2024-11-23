@@ -2,12 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { Pedido } from '../../pedido/entities/pedido.entity';
+import { Sucursal } from '../../sucursal/entities/sucursal.entity';
 
 @Entity({ name: 'clientes' })
 export class Cliente {
@@ -23,7 +25,7 @@ export class Cliente {
   @Column({ type: 'varchar', length: 100 })
   empresa: string;
 
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'varchar', length: 15, nullable: true })
   telefono: string;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
@@ -34,6 +36,9 @@ export class Cliente {
 
   @Column({ type: 'boolean', default: true })
   estado: boolean;
+
+  @ManyToOne(() => Sucursal, (sucursal) => sucursal.clientes)
+  sucursal: Sucursal;
 
   @OneToMany(() => Pedido, (pedidos) => pedidos.cliente)
   pedidos: Pedido[];

@@ -2,58 +2,46 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-import { Gasto } from '../../gasto/entities/gasto.entity';
-import { Pedido } from '../../pedido/entities/pedido.entity';
-import { Registro } from '../../registro/entities/registro.entity';
+import { Sucursal } from '../../sucursal/entities/sucursal.entity';
 
 @Entity({ name: 'cajas' })
 export class Caja {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'decimal', scale: 2 })
-  cuenta: number;
+  @Column({ type: 'decimal', scale: 2, default:0 })
+  principal: number;
 
-  @Column({ type: 'decimal', scale: 2 })
-  efectivo: number;
+  @Column({ type: 'decimal', scale: 2, default:0 })
+  secundaria: number;
 
   @Column({ type: 'decimal', scale: 2 })
   pendiente: number;
 
-  @Column({ type: 'decimal', scale: 2 })
-  cuentaHoy: number;
+  @Column({ type: 'decimal', scale: 2, default:0 })
+  ingresos: number;
 
-  @Column({ type: 'decimal', scale: 2 })
-  efectivoHoy: number;
-
-  @Column({ type: 'decimal', scale: 2 })
-  gastoCuentaHoy: number;
-
-  @Column({ type: 'decimal', scale: 2 })
-  gastoEfectivoHoy: number;
+  @Column({ type: 'decimal', scale: 2, default:0  })
+  salidas: number;
 
   @Column({ type: 'decimal', scale: 2 })
   pendienteHoy: number;
 
-  @Column({ type: 'decimal', scale: 2 })
-  pasadosPagadosHoy: number;
+  @Column({ type: 'decimal', scale: 2, default:0 })
+  pasadosPagados: number;
 
   @Column({ type: 'boolean', default: true })
   estado: boolean;
 
-  @OneToMany(() => Gasto, (gastos) => gastos.caja)
-  gastos: Gasto[];
-
-  @OneToMany(() => Pedido, (pedidos) => pedidos.caja)
-  pedidos: Pedido[];
-
-  @OneToMany(() => Registro, (registros) => registros.caja)
-  registros: Registro[];
+  @OneToOne(() => Sucursal)
+  @JoinColumn()
+  sucursal: Sucursal
 
   @CreateDateColumn({ type: 'timestamptz', precision: 3 })
   created_at: Date;

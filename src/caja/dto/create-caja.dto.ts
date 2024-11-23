@@ -1,12 +1,11 @@
 export class CreateCajaDto {
-  cuenta: number;
-  efectivo: number;
+  principal: number;
+  secundaria: number;
   pendiente: number;
-  cuentaHoy: number;
-  efectivoHoy: number;
-  gastoCuentaHoy: number;
-  gastoEfectivoHoy: number;
+  ingresos: number;
+  salidas: number;
   pendienteHoy: number;
-  pasadosPagadosHoy: number;
+  pasadosPagados: number;
+  idSucursal: string;
   estado?: boolean;
 }

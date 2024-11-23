@@ -2,12 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { Gasto } from '../../gasto/entities/gasto.entity';
+import { Sucursal } from '../../sucursal/entities/sucursal.entity';
 
 @Entity({ name: 'proveedores' })
 export class Proveedor {
@@ -28,6 +30,9 @@ export class Proveedor {
 
   @Column({ type: 'boolean', default: true })
   estado: boolean;
+
+  @ManyToOne(() => Sucursal, (sucursal) => sucursal.proveedores)
+  sucursal: Sucursal;
 
   @OneToMany(() => Gasto, (gastos) => gastos.proveedor)
   gastos: Gasto[];

@@ -10,33 +10,10 @@ import {
 
 import { Usuario } from '../../usuario/entities/usuario.entity';
 import { Cliente } from '../../cliente/entities/cliente.entity';
-import { Caja } from '../../caja/entities/caja.entity';
+import { Sucursal } from '../../sucursal/entities/sucursal.entity';
 
-export enum TipoPedido {
-  TARJETAS = 'tarjetas',
-  VOLANTES = 'volantes',
-  SERVICIO_OFFSET = 'offset',
-  SERVICIO_PLASTICO = 'plastico',
-  OTRO = 'otro',
-}
-
-export enum TipoPago {
-  EFECTIVO = 'efectivo',
-  YAPE = 'yape',
-  TRANSFERENCIA = 'transferencia',
-}
-
-export enum EstadoPedido {
-  PENDIENTE = 'pendiente',
-  PROCESO = 'proceso',
-  COMPLETADO = 'completado',
-  ANULADO = 'anulado',
-}
-
-export enum EstadoPago {
-  PENDIENTE = 'pendiente',
-  PAGADO = 'pagado',
-}
+import { TipoPedido } from '../enums/TipoPedido';
+import { EstadoPago } from '../enums/EstadoPago';
 
 @Entity({ name: 'pedidos' })
 export class Pedido {
@@ -53,11 +30,8 @@ export class Pedido {
   @Generated('increment')
   nroPedido: number;
 
-  @Column({ type: 'enum', enum: TipoPedido, default: TipoPedido.OTRO })
+  @Column({ type: 'enum', enum: TipoPedido, default: TipoPedido.OTROS })
   tipo: TipoPedido;
-
-  @Column({ type: 'enum', enum: TipoPago, default: TipoPago.EFECTIVO })
-  tipoPago: TipoPago;
 
   @Column({ type: 'timestamptz' })
   fecha: Date;
@@ -65,20 +39,17 @@ export class Pedido {
   @Column({ type: 'timestamptz', nullable: true })
   fechaPago: Date;
 
-  @Column({ type: 'enum', enum: EstadoPedido, default: EstadoPedido.PENDIENTE })
-  estado: EstadoPedido;
-
   @Column({ type: 'enum', enum: EstadoPago, default: EstadoPago.PENDIENTE })
   estadoPago: EstadoPago;
+
+  @ManyToOne(() => Sucursal, (sucursal) => sucursal.pedidos)
+  sucursal: Sucursal;
 
   @ManyToOne(() => Usuario, (usuario) => usuario.pedidos)
   usuario: Usuario;
 
   @ManyToOne(() => Cliente, (cliente) => cliente.pedidos)
   cliente: Cliente;
-
-  @ManyToOne(() => Caja, (caja) => caja.pedidos)
-  caja: Caja;
 
   @CreateDateColumn({ type: 'timestamptz', precision: 3 })
   created_at: Date;

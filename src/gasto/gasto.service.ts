@@ -27,45 +27,29 @@ export class GastoService {
   async create(createGastoDto: CreateGastoDto) {
     const caja = await this.cajaService.findOneById(this.cajaId);
     if (!caja) throw new NotFoundException();
-    if (createGastoDto.tipoPago === 'efectivo') {
-      caja.efectivo = parseFloat(
-        (Number(caja.efectivo) - createGastoDto.monto).toFixed(2),
-      );
-    } else {
-      caja.cuenta = parseFloat(
-        (Number(caja.cuenta) - createGastoDto.monto).toFixed(2),
-      );
-    }
+
+    caja.principal = parseFloat((Number(caja.principal) - createGastoDto.monto).toFixed(2))
 
     if (
       new Date(createGastoDto.fecha).toDateString() ===
       new Date().toDateString()
     ) {
-      if (createGastoDto.tipoPago === 'efectivo') {
-        caja.gastoEfectivoHoy = parseFloat(
-          (Number(caja.gastoEfectivoHoy) + createGastoDto.monto).toFixed(2),
-        );
-      } else {
-        caja.gastoCuentaHoy = parseFloat(
-          (Number(caja.gastoCuentaHoy) + createGastoDto.monto).toFixed(2),
-        );
-      }
+      caja.salidas = parseFloat((Number(caja.salidas) + createGastoDto.monto).toFixed(2))
     }
 
     await this.cajaService.update(this.cajaId, caja);
 
     const gasto = await this.gastoRepository.create({
       ...createGastoDto,
-      tipoPago: createGastoDto.tipoPago,
     });
 
-    gasto.usuario = await this.usuarioService.findOneById(
-      createGastoDto.idUsuario,
-    );
+    // gasto.usuario = await this.usuarioService.findOneById(
+    //   createGastoDto.idUsuario,
+    // );
     gasto.proveedor = await this.proveedorService.findOneById(
       createGastoDto.idProveedor,
     );
-    gasto.caja = caja;
+    //gasto.caja = caja;
 
     return await this.gastoRepository.save(gasto);
   }

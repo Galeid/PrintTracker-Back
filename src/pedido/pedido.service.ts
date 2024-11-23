@@ -2,13 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { EstadoPago, EstadoPedido, Pedido, TipoPago } from './entities/pedido.entity';
+import { Pedido } from './entities/pedido.entity';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { CajaService } from '../caja/caja.service';
 import { UsuarioService } from '../usuario/usuario.service';
 import { ClienteService } from '../cliente/cliente.service';
 import { ConfigService } from '@nestjs/config';
+import { EstadoPago } from './enums/EstadoPago';
 
 @Injectable()
 export class PedidoService {
@@ -47,9 +48,9 @@ export class PedidoService {
       ...createPedidoDto,
     });
 
-    pedido.usuario = await this.usuarioService.findOneById(createPedidoDto.idUsuario)
+    //pedido.usuario = await this.usuarioService.findOneById(createPedidoDto.idUsuario)
     pedido.cliente = await this.clienteService.findOneById(createPedidoDto.idCliente)
-    pedido.caja = caja
+    //pedido.caja = caja
 
     return await this.pedidoRepository.save(pedido);
   }
@@ -101,12 +102,30 @@ export class PedidoService {
     const pedido = await this.findOneById(id);
     if (!pedido) throw new NotFoundException();
 
-    Object.assign(pedido, { estadoPedido: EstadoPedido.ANULADO });
+    const caja = await this.cajaService.findOneById(this.cajaId);
+    if (!caja) throw new NotFoundException();
 
-    return await this.pedidoRepository.remove(pedido);
+    caja.pendiente = parseFloat(
+      (Number(caja.pendiente) - pedido.monto).toFixed(2),
+    );
+
+    if (
+      new Date(pedido.fecha).toDateString() ===
+      new Date().toDateString()
+    ) {
+      caja.pendienteHoy = parseFloat(
+        (Number(caja.pendienteHoy) - pedido.monto).toFixed(2),
+      );
+    }
+
+    await this.cajaService.update(this.cajaId, caja);
+
+    Object.assign(pedido, { estadoPago: EstadoPago.ANULADO });
+
+    return await this.pedidoRepository.save(pedido);
   }
 
-  async pay(id: string, tipoPago: TipoPago) {
+  async pay(id: string) {
     const pedido = await this.findOneById(id);
     if (!pedido) throw new NotFoundException();
 
@@ -115,21 +134,13 @@ export class PedidoService {
     caja.pendiente = parseFloat(
       (Number(caja.pendiente) - Number(pedido.monto)).toFixed(2),
     );
-    if (tipoPago === 'efectivo') {
-      caja.efectivo = parseFloat(
-        (Number(caja.efectivo) + Number(pedido.monto)).toFixed(2),
+
+      caja.principal = parseFloat(
+        (Number(caja.principal) + Number(pedido.monto)).toFixed(2),
       );
-      caja.efectivoHoy = parseFloat(
-        (Number(caja.efectivoHoy) + Number(pedido.monto)).toFixed(2),
+      caja.ingresos = parseFloat(
+        (Number(caja.ingresos) + Number(pedido.monto)).toFixed(2),
       );
-    } else {
-      caja.cuenta = parseFloat(
-        (Number(caja.cuenta) + Number(pedido.monto)).toFixed(2),
-      );
-      caja.cuentaHoy = parseFloat(
-        (Number(caja.cuentaHoy) + Number(pedido.monto)).toFixed(2),
-      );
-    }
 
     if (
       new Date(pedido.fecha).toLocaleDateString() ===
@@ -139,14 +150,13 @@ export class PedidoService {
         (Number(caja.pendienteHoy) - Number(pedido.monto)).toFixed(2),
       );
     } else {
-      caja.pasadosPagadosHoy = parseFloat(
-        (Number(caja.pasadosPagadosHoy) + Number(pedido.monto)).toFixed(2),
+      caja.pasadosPagados = parseFloat(
+        (Number(caja.pasadosPagados) + Number(pedido.monto)).toFixed(2),
       );
     }
 
     await this.cajaService.update(this.cajaId, caja);
 
-    pedido.tipoPago = tipoPago;
     pedido.estadoPago = EstadoPago.PAGADO;
     pedido.fechaPago = new Date();
 

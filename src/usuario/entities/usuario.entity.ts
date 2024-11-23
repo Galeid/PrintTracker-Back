@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -10,12 +11,9 @@ import {
 import { Gasto } from '../../gasto/entities/gasto.entity';
 import { Pedido } from '../../pedido/entities/pedido.entity';
 import { Registro } from '../../registro/entities/registro.entity';
+import { Sucursal } from '../../sucursal/entities/sucursal.entity';
 
-export enum UsuarioRol {
-  ADMIN = 'admin',
-  CONTROLADOR = 'controlador',
-  REPORTE = 'reporte',
-}
+import { UsuarioRol } from '../enums/UsuarioRol';
 
 @Entity({ name: 'usuarios' })
 export class Usuario {
@@ -36,6 +34,9 @@ export class Usuario {
 
   @Column({ type: 'boolean', default: true })
   estado: boolean;
+
+  @ManyToOne(() => Sucursal, (sucursal) => sucursal.usuarios)
+  sucursal: Sucursal;
 
   @OneToMany(() => Gasto, (gastos) => gastos.usuario)
   gastos: Gasto[];

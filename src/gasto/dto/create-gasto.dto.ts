@@ -1,16 +1,10 @@
-export enum TipoPago {
-  EFECTIVO = 'efectivo',
-  YAPE = 'yape',
-  TRANSFERENCIA = 'transferencia',
-}
+import { TipoGasto } from "../enums/TipoGasto";
 
 export class CreateGastoDto {
   descripcion: string;
   monto: number;
   nroFactura?: string;
-  tipoPago: TipoPago;
   fecha: Date;
-  idUsuario: string;
+  tipo: TipoGasto;
   idProveedor: string;
-  idCaja: string;
 }
