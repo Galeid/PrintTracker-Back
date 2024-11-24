@@ -1,19 +1,32 @@
 import * as bcrypt from 'bcrypt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 import { UsuarioService } from '../usuario/usuario.service';
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usuarioService: UsuarioService) {}
+  constructor(private readonly usuarioService: UsuarioService, private readonly jwtService: JwtService) {}
 
   async login({ username, password }: LoginDto) {
     const usuario = await this.usuarioService.findOneByUsuario(username);
-    if (usuario) {
-      const isValid = await bcrypt.compare(password, usuario.contrasena);
-      if (isValid) return usuario;
+    if (!usuario) {
+      throw new UnauthorizedException('Usuario incorrecto');
     }
-    throw new UnauthorizedException('Usuario o contraseña incorrectos');
+
+    const isValid = await bcrypt.compare(password, usuario.contrasena);
+    if(!isValid) {
+      throw new UnauthorizedException('Contraseña incorrecta');
+    }
+
+    const payload = { sub: usuario.id, rol: usuario.rol, sucursal: usuario.sucursal.id };
+    const token = await this.jwtService.signAsync(payload)
+
+    return {
+      token,
+      rol: usuario.rol,
+      sucursal: usuario.sucursal.nombre,
+    };
   }
 }
