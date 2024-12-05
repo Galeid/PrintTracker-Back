@@ -11,8 +11,6 @@ import { Usuario } from '../../usuario/entities/usuario.entity';
 import { Proveedor } from '../../proveedor/entities/proveedor.entity';
 import { Sucursal } from '../../sucursal/entities/sucursal.entity';
 
-import { TipoGasto } from '../enums/TipoGasto';
-
 @Entity({ name: 'gastos' })
 export class Gasto {
   @PrimaryGeneratedColumn('uuid')
@@ -30,8 +28,8 @@ export class Gasto {
   @Column({ type: 'timestamptz' })
   fecha: Date;
 
-  @Column({ type: 'enum', enum: TipoGasto, default: TipoGasto.OTROS })
-  tipo: TipoGasto;
+  @Column({ type: 'boolean', default: false})
+  secundario: boolean;
 
   @ManyToOne(() => Sucursal, (sucursal) => sucursal.gastos)
   sucursal: Sucursal;

@@ -1,9 +1,7 @@
-import { TipoPedido } from "../enums/TipoPedido";
-
 export class CreatePedidoDto {
   descripcion: string;
   monto: number;
-  tipo: TipoPedido;
   fecha: Date;
+  idServicio: string;
   idCliente: string;
 }

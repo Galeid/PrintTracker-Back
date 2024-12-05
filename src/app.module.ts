@@ -10,7 +10,6 @@ import { Cliente } from './cliente/entities/cliente.entity';
 import { Gasto } from './gasto/entities/gasto.entity';
 import { Pedido } from './pedido/entities/pedido.entity';
 import { Proveedor } from './proveedor/entities/proveedor.entity';
-import { Registro } from './registro/entities/registro.entity';
 import { Sucursal } from './sucursal/entities/sucursal.entity';
 import { Usuario } from './usuario/entities/usuario.entity';
 
@@ -20,9 +19,10 @@ import { ClienteModule } from './cliente/cliente.module';
 import { GastoModule } from './gasto/gasto.module';
 import { PedidoModule } from './pedido/pedido.module';
 import { ProveedorModule } from './proveedor/proveedor.module';
-import { RegistroModule } from './registro/registro.module';
 import { SucursalModule } from './sucursal/sucursal.module';
 import { UsuarioModule } from './usuario/usuario.module';
+import { ServicioModule } from './servicio/servicio.module';
+import { Servicio } from './servicio/entities/servicio.entity';
 
 @Module({
   imports: [
@@ -32,20 +32,16 @@ import { UsuarioModule } from './usuario/usuario.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
+        url: configService.get('DB_URL'),
         entities: [
           Caja,
           Cliente,
           Gasto,
           Pedido,
           Proveedor,
-          Registro,
           Sucursal,
           Usuario,
+          Servicio,
         ],
         synchronize: true,
       }),
@@ -56,9 +52,9 @@ import { UsuarioModule } from './usuario/usuario.module';
     GastoModule,
     PedidoModule,
     ProveedorModule,
-    RegistroModule,
     SucursalModule,
     UsuarioModule,
+    ServicioModule,
   ],
   controllers: [AppController],
   providers: [AppService],

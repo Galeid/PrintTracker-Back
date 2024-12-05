@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { SucursalService } from './sucursal.service';
 import { CreateSucursalDto } from './dto/create-sucursal.dto';
 import { UpdateSucursalDto } from './dto/update-sucursal.dto';
+import { AuthGuard } from '../auth/guard/auth.guard';
 
 @Controller('sucursal')
 export class SucursalController {
   constructor(private readonly sucursalService: SucursalService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
   create(@Body() createSucursalDto: CreateSucursalDto) {
     return this.sucursalService.create(createSucursalDto);

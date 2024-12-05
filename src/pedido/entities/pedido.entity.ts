@@ -12,8 +12,8 @@ import { Usuario } from '../../usuario/entities/usuario.entity';
 import { Cliente } from '../../cliente/entities/cliente.entity';
 import { Sucursal } from '../../sucursal/entities/sucursal.entity';
 
-import { TipoPedido } from '../enums/TipoPedido';
 import { EstadoPago } from '../enums/EstadoPago';
+import { Servicio } from '../../servicio/entities/servicio.entity';
 
 @Entity({ name: 'pedidos' })
 export class Pedido {
@@ -30,9 +30,6 @@ export class Pedido {
   @Generated('increment')
   nroPedido: number;
 
-  @Column({ type: 'enum', enum: TipoPedido, default: TipoPedido.OTROS })
-  tipo: TipoPedido;
-
   @Column({ type: 'timestamptz' })
   fecha: Date;
 
@@ -41,6 +38,12 @@ export class Pedido {
 
   @Column({ type: 'enum', enum: EstadoPago, default: EstadoPago.PENDIENTE })
   estadoPago: EstadoPago;
+
+  @Column({ type: 'boolean', default: false})
+  secundario: boolean;
+
+  @ManyToOne(() => Servicio, (servicio) => servicio.pedidos)
+  servicio: Servicio;
 
   @ManyToOne(() => Sucursal, (sucursal) => sucursal.pedidos)
   sucursal: Sucursal;

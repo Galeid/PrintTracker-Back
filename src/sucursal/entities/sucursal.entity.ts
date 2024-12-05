@@ -9,7 +9,6 @@ import {
 
 import { Gasto } from '../../gasto/entities/gasto.entity';
 import { Pedido } from '../../pedido/entities/pedido.entity';
-import { Registro } from '../../registro/entities/registro.entity';
 import { Usuario } from '../../usuario/entities/usuario.entity';
 import { Cliente } from '../../cliente/entities/cliente.entity';
 import { Proveedor } from '../../proveedor/entities/proveedor.entity';
@@ -39,9 +38,6 @@ export class Sucursal {
 
   @OneToMany(() => Pedido, (pedidos) => pedidos.sucursal)
   pedidos: Pedido[];
-
-  @OneToMany(() => Registro, (registros) => registros.sucursal)
-  registros: Registro[];
 
   @CreateDateColumn({ type: 'timestamptz', precision: 3 })
   created_at: Date;
