@@ -15,13 +15,13 @@ export class CashService {
     private readonly configService: ConfigService,
   ) {}
 
-  cajaId = this.configService.get<string>('CAJA_ID');
+  cashId = this.configService.get<string>('CAJA_ID');
 
-  async create(createCajaDto: CreateCashDto) {
-    const caja = await this.cashRepository.create({
-      ...createCajaDto,
+  async create(createCashDto: CreateCashDto) {
+    const cash = await this.cashRepository.create({
+      ...createCashDto,
     });
-    return await this.cashRepository.save(caja);
+    return await this.cashRepository.save(cash);
   }
 
   async findAll() {
@@ -30,15 +30,15 @@ export class CashService {
 
   async findOneById(id: string) {
     return await this.cashRepository.findOne({
-      where: { id: this.cajaId },
+      where: { id: this.cashId },
     });
   }
 
-  async update(id: string, updateCajaDto: UpdateCashDto) {
-    const caja = await this.findOneById(id);
-    if (!caja) throw new NotFoundException();
-    Object.assign(caja, updateCajaDto);
-    return await this.cashRepository.save(caja);
+  async update(id: string, updateCashDto: UpdateCashDto) {
+    const cash = await this.findOneById(id);
+    if (!cash) throw new NotFoundException();
+    Object.assign(cash, updateCashDto);
+    return await this.cashRepository.save(cash);
   }
 
   async remove(id: string) {

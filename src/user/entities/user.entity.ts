@@ -8,9 +8,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { Branch } from '../../branch/entities/branch.entity';
 import { Expense } from '../../expense/entities/expense.entity';
 import { Order } from '../../order/entities/order.entity';
-import { Branch } from '../../branch/entities/branch.entity';
 
 import { UserRole } from '../enums/UserRole';
 

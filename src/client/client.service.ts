@@ -13,11 +13,11 @@ export class ClientService {
     private clientRepository: Repository<Client>,
   ) {}
 
-  async create(createClienteDto: CreateClientDto) {
-    const cliente = await this.clientRepository.create({
-      ...createClienteDto,
+  async create(createClientDto: CreateClientDto) {
+    const client = await this.clientRepository.create({
+      ...createClientDto,
     });
-    return await this.clientRepository.save(cliente);
+    return await this.clientRepository.save(client);
   }
 
   async findAll() {
@@ -30,11 +30,11 @@ export class ClientService {
     });
   }
 
-  async update(id: string, updateClienteDto: UpdateClientDto) {
-    const cliente = await this.findOneById(id);
-    if (!cliente) throw new NotFoundException();
-    Object.assign(cliente, updateClienteDto);
-    return await this.clientRepository.save(cliente);
+  async update(id: string, updateClientDto: UpdateClientDto) {
+    const client = await this.findOneById(id);
+    if (!client) throw new NotFoundException();
+    Object.assign(client, updateClientDto);
+    return await this.clientRepository.save(client);
   }
 
   async remove(id: string) {

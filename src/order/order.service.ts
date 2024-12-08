@@ -17,42 +17,42 @@ export class OrderService {
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
 
-    private readonly usuarioService: UserService,
-    private readonly clienteService: ClientService,
-    private readonly cajaService: CashService,
+    private readonly userService: UserService,
+    private readonly clientService: ClientService,
+    private readonly cashService: CashService,
     private readonly configService: ConfigService,
   ) {}
 
-  cajaId = this.configService.get<string>('CAJA_ID');
+  cashId = this.configService.get<string>('CAJA_ID');
 
-  async create(createPedidoDto: CreateOrderDto) {
-    const caja = await this.cajaService.findOneById(this.cajaId);
-    if (!caja) throw new NotFoundException();
+  async create(createOrderDto: CreateOrderDto) {
+    const cash = await this.cashService.findOneById(this.cashId);
+    if (!cash) throw new NotFoundException();
 
-    caja.pendiente = parseFloat(
-      (Number(caja.pendiente) + createPedidoDto.amount).toFixed(2),
+    cash.pending = parseFloat(
+      (Number(cash.pending) + createOrderDto.amount).toFixed(2),
     );
 
     if (
-      new Date(createPedidoDto.date).toDateString() ===
+      new Date(createOrderDto.date).toDateString() ===
       new Date().toDateString()
     ) {
-      caja.pendienteHoy = parseFloat(
-        (Number(caja.pendienteHoy) + createPedidoDto.amount).toFixed(2),
+      cash.todayPendings = parseFloat(
+        (Number(cash.todayPendings) + createOrderDto.amount).toFixed(2),
       );
     }
 
-    await this.cajaService.update(this.cajaId, caja);
+    await this.cashService.update(this.cashId, cash);
 
-    const pedido = await this.orderRepository.create({
-      ...createPedidoDto,
+    const order = await this.orderRepository.create({
+      ...createOrderDto,
     });
 
     //pedido.usuario = await this.usuarioService.findOneById(createPedidoDto.idUsuario)
-    pedido.client = await this.clienteService.findOneById(createPedidoDto.clientId)
+    order.client = await this.clientService.findOneById(createOrderDto.clientId)
     //pedido.caja = caja
 
-    return await this.orderRepository.save(pedido);
+    return await this.orderRepository.save(order);
   }
 
   async findAll() {
@@ -61,7 +61,7 @@ export class OrderService {
         client: true,
       },
       select: {
-        client: { nombre: true },
+        client: { name: true },
       },
       order: {
         noOrder: 'DESC'
@@ -69,7 +69,7 @@ export class OrderService {
     });
   }
 
-  async findByCliente(id:string) {
+  async findByClient(id:string) {
     return await this.orderRepository.find({
       where: {
         client: { id: id}
@@ -78,7 +78,7 @@ export class OrderService {
         client: true,
       },
       select: {
-        client: { nombre: true },
+        client: { name: true },
       },
     });
   }
@@ -89,77 +89,77 @@ export class OrderService {
     });
   }
 
-  async update(id: string, updatePedidoDto: UpdateOrderDto) {
-    const pedido = await this.findOneById(id);
-    if (!pedido) throw new NotFoundException();
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
+    const order = await this.findOneById(id);
+    if (!order) throw new NotFoundException();
 
-    Object.assign(pedido, updatePedidoDto);
+    Object.assign(order, updateOrderDto);
 
-    return await this.orderRepository.save(pedido);
+    return await this.orderRepository.save(order);
   }
 
   async remove(id: string) {
-    const pedido = await this.findOneById(id);
-    if (!pedido) throw new NotFoundException();
+    const order = await this.findOneById(id);
+    if (!order) throw new NotFoundException();
 
-    const caja = await this.cajaService.findOneById(this.cajaId);
-    if (!caja) throw new NotFoundException();
+    const cash = await this.cashService.findOneById(this.cashId);
+    if (!cash) throw new NotFoundException();
 
-    caja.pendiente = parseFloat(
-      (Number(caja.pendiente) - pedido.amount).toFixed(2),
+    cash.pending = parseFloat(
+      (Number(cash.pending) - order.amount).toFixed(2),
     );
 
     if (
-      new Date(pedido.date).toDateString() ===
+      new Date(order.date).toDateString() ===
       new Date().toDateString()
     ) {
-      caja.pendienteHoy = parseFloat(
-        (Number(caja.pendienteHoy) - pedido.amount).toFixed(2),
+      cash.todayPendings = parseFloat(
+        (Number(cash.todayPendings) - order.amount).toFixed(2),
       );
     }
 
-    await this.cajaService.update(this.cajaId, caja);
+    await this.cashService.update(this.cashId, cash);
 
-    Object.assign(pedido, { estadoPago: PaymentStatus.CANCELLED });
+    Object.assign(order, { estadoPago: PaymentStatus.CANCELLED });
 
-    return await this.orderRepository.save(pedido);
+    return await this.orderRepository.save(order);
   }
 
   async pay(id: string) {
-    const pedido = await this.findOneById(id);
-    if (!pedido) throw new NotFoundException();
+    const order = await this.findOneById(id);
+    if (!order) throw new NotFoundException();
 
-    const caja = await this.cajaService.findOneById(this.cajaId);
-    if (!caja) throw new NotFoundException();
-    caja.pendiente = parseFloat(
-      (Number(caja.pendiente) - Number(pedido.amount)).toFixed(2),
+    const cash = await this.cashService.findOneById(this.cashId);
+    if (!cash) throw new NotFoundException();
+    cash.pending = parseFloat(
+      (Number(cash.pending) - Number(order.amount)).toFixed(2),
     );
 
-      caja.principal = parseFloat(
-        (Number(caja.principal) + Number(pedido.amount)).toFixed(2),
+      cash.main = parseFloat(
+        (Number(cash.main) + Number(order.amount)).toFixed(2),
       );
-      caja.ingresos = parseFloat(
-        (Number(caja.ingresos) + Number(pedido.amount)).toFixed(2),
+      cash.income = parseFloat(
+        (Number(cash.income) + Number(order.amount)).toFixed(2),
       );
 
     if (
-      new Date(pedido.date).toLocaleDateString() ===
+      new Date(order.date).toLocaleDateString() ===
       new Date().toLocaleDateString()
     ) {
-      caja.pendienteHoy = parseFloat(
-        (Number(caja.pendienteHoy) - Number(pedido.amount)).toFixed(2),
+      cash.todayPendings = parseFloat(
+        (Number(cash.todayPendings) - Number(order.amount)).toFixed(2),
       );
     } else {
-      caja.pasadosPagados = parseFloat(
-        (Number(caja.pasadosPagados) + Number(pedido.amount)).toFixed(2),
+      cash.pastPaid = parseFloat(
+        (Number(cash.pastPaid) + Number(order.amount)).toFixed(2),
       );
     }
 
-    await this.cajaService.update(this.cajaId, caja);
+    await this.cashService.update(this.cashId, cash);
 
-    pedido.paymentStatus = PaymentStatus.PAID;
-    pedido.paymentDate = new Date();
+    order.paymentStatus = PaymentStatus.PAID;
+    order.paymentDate = new Date();
 
-    return await this.orderRepository.save(pedido);
+    return await this.orderRepository.save(order);
   }
 }

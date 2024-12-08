@@ -28,7 +28,7 @@ export class OrderController {
 
   @Get('cliente/:id')
   findByCliente(@Param('id') id: string) {
-    return this.orderService.findByCliente(id);
+    return this.orderService.findByClient(id);
   }
 
   @Patch('pagar/:id')

@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Expense } from './entities/expense.entity';
 import { CashService } from '../cash/cash.service';
 import { CreateExpenseDto } from './dto/create-expense.dto';
-import { UpdateGastoDto } from './dto/update-expense.dto';
+import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { UserService } from '../user/user.service';
 import { SupplierService } from '../supplier/supplier.service';
 import { ConfigService } from '@nestjs/config';
@@ -22,36 +22,36 @@ export class ExpenseService {
     private readonly configService: ConfigService,
   ) {}
 
-  cajaId = this.configService.get<string>('CAJA_ID');
+  cashId = this.configService.get<string>('CAJA_ID');
 
-  async create(createGastoDto: CreateExpenseDto) {
-    const caja = await this.cashService.findOneById(this.cajaId);
-    if (!caja) throw new NotFoundException();
+  async create(createExpenseDto: CreateExpenseDto) {
+    const cash = await this.cashService.findOneById(this.cashId);
+    if (!cash) throw new NotFoundException();
 
-    caja.principal = parseFloat((Number(caja.principal) - createGastoDto.amount).toFixed(2))
+    cash.main = parseFloat((Number(cash.main) - createExpenseDto.amount).toFixed(2))
 
     if (
-      new Date(createGastoDto.date).toDateString() ===
+      new Date(createExpenseDto.date).toDateString() ===
       new Date().toDateString()
     ) {
-      caja.salidas = parseFloat((Number(caja.salidas) + createGastoDto.amount).toFixed(2))
+      cash.outflows = parseFloat((Number(cash.outflows) + createExpenseDto.amount).toFixed(2))
     }
 
-    await this.cashService.update(this.cajaId, caja);
+    await this.cashService.update(this.cashId, cash);
 
-    const gasto = await this.expenseRepository.create({
-      ...createGastoDto,
+    const expense = await this.expenseRepository.create({
+      ...createExpenseDto,
     });
 
     // gasto.usuario = await this.usuarioService.findOneById(
     //   createGastoDto.idUsuario,
     // );
-    gasto.supplier = await this.supplierService.findOneById(
-      createGastoDto.supplierId,
+    expense.supplier = await this.supplierService.findOneById(
+      createExpenseDto.supplierId,
     );
     //gasto.caja = caja;
 
-    return await this.expenseRepository.save(gasto);
+    return await this.expenseRepository.save(expense);
   }
 
   async findAll() {
@@ -63,7 +63,7 @@ export class ExpenseService {
     });
   }
 
-  async findByProveedor(id:string) {
+  async findBySupplier(id:string) {
     return await this.expenseRepository.find({
       where: {
         supplier: { id: id}
@@ -81,19 +81,19 @@ export class ExpenseService {
     });
   }
 
-  async update(id: string, updateGastoDto: UpdateGastoDto) {
-    const gasto = await this.findOneById(id);
-    if (!gasto) throw new NotFoundException();
-    Object.assign(gasto, updateGastoDto);
-    return await this.expenseRepository.save(gasto);
+  async update(id: string, updateExpenseDto: UpdateExpenseDto) {
+    const expense = await this.findOneById(id);
+    if (!expense) throw new NotFoundException();
+    Object.assign(expense, updateExpenseDto);
+    return await this.expenseRepository.save(expense);
   }
 
   async remove(id: string) {
-    const gasto = await this.findOneById(id);
-    if (!gasto) throw new NotFoundException();
+    const expense = await this.findOneById(id);
+    if (!expense) throw new NotFoundException();
 
-    if (new Date(gasto.date).getDay() == new Date().getDay()) {
-      return await this.expenseRepository.remove(gasto);
+    if (new Date(expense.date).getDay() == new Date().getDay()) {
+      return await this.expenseRepository.remove(expense);
     } else return {};
   }
 }

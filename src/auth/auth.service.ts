@@ -10,23 +10,23 @@ export class AuthService {
   constructor(private readonly usuarioService: UserService, private readonly jwtService: JwtService) {}
 
   async login({ username, password }: LoginDto) {
-    const usuario = await this.usuarioService.findOneByUsuario(username);
-    if (!usuario) {
+    const user = await this.usuarioService.findOneByUser(username);
+    if (!user) {
       throw new UnauthorizedException('Usuario incorrecto');
     }
 
-    const isValid = await bcrypt.compare(password, usuario.contrasena);
+    const isValid = await bcrypt.compare(password, user.password);
     if(!isValid) {
       throw new UnauthorizedException('Contraseña incorrecta');
     }
 
-    const payload = { sub: usuario.id, rol: usuario.rol, sucursal: usuario.sucursal.id };
+    const payload = { sub: user.id, role: user.role, branch: user.branch.id };
     const token = await this.jwtService.signAsync(payload)
 
     return {
       token,
-      rol: usuario.rol,
-      sucursal: usuario.sucursal.nombre,
+      role: user.role,
+      branch: user.branch.name,
     };
   }
 }

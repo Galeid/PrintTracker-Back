@@ -32,7 +32,7 @@ export class UserService {
     });
   }
 
-  async findOneByUsuario(username: string) {
+  async findOneByUser(username: string) {
     return await this.userRepository.findOne({
       where: { username },
       select: {

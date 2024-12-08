@@ -37,7 +37,7 @@ export class Client {
   @Column({ type: 'boolean', default: true })
   status: boolean;
 
-  @ManyToOne(() => Branch, (branch) => branch.clientes)
+  @ManyToOne(() => Branch, (branch) => branch.clients)
   branch: Branch;
 
   @OneToMany(() => Order, (orders) => orders.client)

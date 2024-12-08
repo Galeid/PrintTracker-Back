@@ -10,7 +10,7 @@ import {
 
 import { ExpenseService } from './expense.service';
 import { CreateExpenseDto } from './dto/create-expense.dto';
-import { UpdateGastoDto } from './dto/update-expense.dto';
+import { UpdateExpenseDto } from './dto/update-expense.dto';
 
 @Controller('expenses')
 export class ExpenseController {
@@ -28,7 +28,7 @@ export class ExpenseController {
 
   @Get('proveedor/:id')
   findByProveedor(@Param('id') id: string) {
-    return this.expenseService.findByProveedor(id);
+    return this.expenseService.findBySupplier(id);
   }
 
   @Get(':id')
@@ -37,7 +37,7 @@ export class ExpenseController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExpenseDto: UpdateGastoDto) {
+  update(@Param('id') id: string, @Body() updateExpenseDto: UpdateExpenseDto) {
     return this.expenseService.update(id, updateExpenseDto);
   }
 
