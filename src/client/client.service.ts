@@ -20,7 +20,7 @@ export class ClientService {
     return await this.clientRepository.save(client);
   }
 
-  async findAll() {
+  async findAll(): Promise<Client[]> {
     return await this.clientRepository.find({ where: { status: true } });
   }
 

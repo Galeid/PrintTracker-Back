@@ -24,6 +24,9 @@ export class Branch {
   @Column({ type: 'boolean', default: true })
   status: boolean;
 
+  @Column({ type: 'timestamptz', nullable: true })
+  lockDate: Date;
+
   @OneToMany(() => User, (users) => users.branch)
   users: User[];
 

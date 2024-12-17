@@ -6,11 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Request
 } from '@nestjs/common';
 
-import { CashService } from './cash.service';
+import { PayloadDto } from '../auth/dto/payload.dto';
 import { CreateCashDto } from './dto/create-cash.dto';
 import { UpdateCashDto } from './dto/update-cash.dto';
+
+import { CashService } from './cash.service';
+import { Cash } from './entities/cash.entity';
+
+import { AuthGuard } from '../auth/guard/auth.guard';
 
 @Controller('cashes')
 export class CashController {
@@ -26,10 +33,17 @@ export class CashController {
     return this.cashService.findAll();
   }
 
+  @Get('branch')
+  @UseGuards(AuthGuard)
+  findByBranch(@Request() request): Promise<Cash> {
+    return this.cashService.findOneByBranch(request.payload as PayloadDto);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.cashService.findOneById(id);
   }
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCashDto: UpdateCashDto) {

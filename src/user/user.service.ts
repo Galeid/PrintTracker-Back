@@ -42,7 +42,14 @@ export class UserService {
         role: true,
         name: true,
         status: true,
+        branch: {
+          id: true,
+          name: true,
+        }
       },
+      relations: {
+        branch: true,
+      }
     });
   }
 

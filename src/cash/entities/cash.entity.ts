@@ -15,25 +15,25 @@ export class Cash {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'decimal', scale: 2, default:0 })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   main: number;
 
-  @Column({ type: 'decimal', scale: 2, default:0 })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   secondary: number;
 
-  @Column({ type: 'decimal', scale: 2 })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   pending: number;
 
-  @Column({ type: 'decimal', scale: 2, default:0 })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   income: number;
 
-  @Column({ type: 'decimal', scale: 2, default:0  })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   outflows: number;
 
-  @Column({ type: 'decimal', scale: 2 })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   todayPendings: number;
 
-  @Column({ type: 'decimal', scale: 2, default:0 })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   pastPaid: number;
 
   @Column({ type: 'boolean', default: true })
@@ -41,7 +41,7 @@ export class Cash {
 
   @OneToOne(() => Branch)
   @JoinColumn()
-  branch: Branch
+  branch: Branch;
 
   @CreateDateColumn({ type: 'timestamptz', precision: 3 })
   created_at: Date;

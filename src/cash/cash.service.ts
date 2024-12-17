@@ -6,13 +6,14 @@ import { Cash } from './entities/cash.entity';
 import { CreateCashDto } from './dto/create-cash.dto';
 import { UpdateCashDto } from './dto/update-cash.dto';
 import { ConfigService } from '@nestjs/config';
+import { PayloadDto } from '../auth/dto/payload.dto';
 
 @Injectable()
 export class CashService {
   constructor(
     @InjectRepository(Cash)
     private cashRepository: Repository<Cash>,
-    private readonly configService: ConfigService,
+    private configService: ConfigService,
   ) {}
 
   cashId = this.configService.get<string>('CAJA_ID');
@@ -31,6 +32,16 @@ export class CashService {
   async findOneById(id: string) {
     return await this.cashRepository.findOne({
       where: { id: this.cashId },
+    });
+  }
+
+  async findOneByBranch(payload: PayloadDto) {
+    return await this.cashRepository.findOne({
+      where: {
+        branch: {
+          id: payload.branch,
+        },
+      },
     });
   }
 

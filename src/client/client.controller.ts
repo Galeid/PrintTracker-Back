@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 
 import { ClientService } from './client.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { Client } from './entities/client.entity';
 
 @Controller('clients')
 export class ClientController {
@@ -22,7 +25,8 @@ export class ClientController {
   }
 
   @Get()
-  findAll() {
+  @UseGuards(AuthGuard)
+  findAll(): Promise<Client[]> {
     return this.clientService.findAll();
   }
 

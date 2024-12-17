@@ -8,8 +8,8 @@ import { AuthGuard } from '../auth/guard/auth.guard';
 export class BranchController {
   constructor(private readonly branchService: BranchService) {}
 
-  @UseGuards(AuthGuard)
   @Post()
+  @UseGuards(AuthGuard)
   create(@Body() createBranchDto: CreateBranchDto) {
     return this.branchService.create(createBranchDto);
   }
