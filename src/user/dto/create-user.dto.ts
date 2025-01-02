@@ -6,4 +6,5 @@ export class CreateUserDto {
   role: UserRole;
   name?: string;
   status?: boolean;
+  branchId: string;
 }

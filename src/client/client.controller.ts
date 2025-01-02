@@ -20,7 +20,8 @@ export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Post()
-  create(@Body() createClientDto: CreateClientDto) {
+  @UseGuards(AuthGuard)
+  create(@Body() createClientDto: CreateClientDto): Promise<Client> {
     return this.clientService.create(createClientDto);
   }
 
@@ -36,7 +37,8 @@ export class ClientController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
+  @UseGuards(AuthGuard)
+  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto): Promise<Client> {
     return this.clientService.update(id, updateClientDto);
   }
 

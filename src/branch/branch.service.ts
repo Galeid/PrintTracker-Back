@@ -19,12 +19,16 @@ export class BranchService {
     return await this.branchRepository.save(branch);
   }
 
-  findAll() {
-    return `This action returns all sucursal`;
+  async findAll() {
+    return await this.branchRepository.find({
+      where: { status: true },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sucursal`;
+  async findOne(id: string) {
+    return await this.branchRepository.findOne({
+      where: { id },
+    });
   }
 
   update(id: number, updateBranchDto: UpdateBranchDto) {

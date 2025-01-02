@@ -1,7 +1,7 @@
 export class CreateClientDto {
   name: string;
-  ruc?: string;
   company: string;
+  ruc?: string;
   phone?: string;
   email?: string;
   address?: string;

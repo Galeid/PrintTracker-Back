@@ -13,8 +13,8 @@ export class ClientService {
     private clientRepository: Repository<Client>,
   ) {}
 
-  async create(createClientDto: CreateClientDto) {
-    const client = await this.clientRepository.create({
+  async create(createClientDto: CreateClientDto): Promise<Client> {
+    const client = this.clientRepository.create({
       ...createClientDto,
     });
     return await this.clientRepository.save(client);
@@ -24,13 +24,13 @@ export class ClientService {
     return await this.clientRepository.find({ where: { status: true } });
   }
 
-  async findOneById(id: string) {
+  async findOneById(id: string): Promise<Client> {
     return await this.clientRepository.findOne({
       where: { id },
     });
   }
 
-  async update(id: string, updateClientDto: UpdateClientDto) {
+  async update(id: string, updateClientDto: UpdateClientDto): Promise<Client> {
     const client = await this.findOneById(id);
     if (!client) throw new NotFoundException();
     Object.assign(client, updateClientDto);
