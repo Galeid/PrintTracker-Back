@@ -31,7 +31,7 @@ export class CashService {
 
   async findOneById(id: string) {
     return await this.cashRepository.findOne({
-      where: { id: this.cashId },
+      where: { id },
     });
   }
 
@@ -42,6 +42,9 @@ export class CashService {
           id: payload.branch,
         },
       },
+      relations: {
+        branch: true,
+      }
     });
   }
 

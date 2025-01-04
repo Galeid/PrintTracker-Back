@@ -25,7 +25,7 @@ export class BranchService {
     });
   }
 
-  async findOne(id: string) {
+  async findOneById(id: string) {
     return await this.branchRepository.findOne({
       where: { id },
     });

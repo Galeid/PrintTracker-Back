@@ -23,8 +23,10 @@ export class ServiceService {
     return await this.serviceRepository.find({ where: { status: true } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} servicio`;
+  async findOneById(id: string): Promise<Service> {
+    return await this.serviceRepository.findOne({
+      where: { id },
+    });
   }
 
   async update(

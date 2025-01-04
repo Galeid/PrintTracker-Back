@@ -24,7 +24,7 @@ export class UserService {
       password: await bcrypt.hash(createUserDto.password, 10),
     });
 
-    const userBranch = await this.branchService.findOne(branchId);
+    const userBranch = await this.branchService.findOneById(branchId);
     if (!userBranch) throw new NotFoundException('Branch not found');
     user.branch = userBranch;
     return await this.userRepository.save(user);
@@ -86,7 +86,7 @@ export class UserService {
     if (password !== '') user.password = await bcrypt.hash(password, 10);
 
     if (branchId !== user.branch.id) {
-      const userBranch = await this.branchService.findOne(branchId);
+      const userBranch = await this.branchService.findOneById(branchId);
       if (!userBranch) throw new NotFoundException('Branch not found');
       user.branch = userBranch;
     }
