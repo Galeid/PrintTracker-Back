@@ -7,8 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Request
-
+  Request,
 } from '@nestjs/common';
 
 import { OrderService } from './order.service';
@@ -24,8 +23,11 @@ export class OrderController {
 
   @Post()
   @UseGuards(AuthGuard)
-  create(@Body() createOrderDto: CreateOrderDto,@Request() request) {
-    return this.orderService.create(createOrderDto, request.payload as PayloadDto);
+  create(@Body() createOrderDto: CreateOrderDto, @Request() request) {
+    return this.orderService.create(
+      createOrderDto,
+      request.payload as PayloadDto,
+    );
   }
 
   @Get()
@@ -47,7 +49,7 @@ export class OrderController {
 
   @Patch('pay')
   @UseGuards(AuthGuard)
-  pay(@Body() payOrderDto: PayOrderDto,@Request() request) {
+  pay(@Body() payOrderDto: PayOrderDto, @Request() request) {
     return this.orderService.pay(payOrderDto, request.payload as PayloadDto);
   }
 
@@ -58,7 +60,7 @@ export class OrderController {
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  remove(@Param('id') id: string) {
-    return this.orderService.remove(id);
+  remove(@Param('id') id: string, @Request() request) {
+    return this.orderService.remove(id, request.payload as PayloadDto);
   }
 }

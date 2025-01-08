@@ -108,33 +108,37 @@ export class OrderService {
     return await this.orderRepository.save(order);
   }
 
-  async remove(id: string) {
+  async remove(id: string, payload: PayloadDto) {
     const order = await this.findOneById(id);
     if (!order) throw new NotFoundException();
 
-    const cash = await this.cashService.findOneById(this.cashId);
+    const cash = await this.cashService.findOneByBranch(payload);
     if (!cash) throw new NotFoundException();
 
-    cash.pending = parseFloat((Number(cash.pending) - order.amount).toFixed(2));
-
-    if (new Date(order.date).toDateString() === new Date().toDateString()) {
-      cash.todayPendings = parseFloat(
-        (Number(cash.todayPendings) - order.amount).toFixed(2),
+    if (order.paymentStatus === PaymentStatus.PAID) {
+      cash.main = parseFloat(
+        (Number(cash.main) - Number(order.amount)).toFixed(2),
+      );
+    } else if (order.paymentStatus === PaymentStatus.OTHER) {
+      cash.secondary = parseFloat(
+        (Number(cash.secondary) - Number(order.amount)).toFixed(2),
+      );
+    } else if (order.paymentStatus === PaymentStatus.PENDING) {
+      cash.pending = parseFloat(
+        (Number(cash.pending) - Number(order.amount)).toFixed(2),
       );
     }
 
-    await this.cashService.update(this.cashId, cash);
+    await this.cashService.update(cash.id, cash);
 
-    Object.assign(order, { estadoPago: PaymentStatus.CANCELLED });
+    Object.assign(order, { paymentStatus: PaymentStatus.CANCELLED });
 
     return await this.orderRepository.save(order);
   }
 
-
   async pay(payOrderDto: PayOrderDto, payload: PayloadDto) {
     const order = await this.findOneById(payOrderDto.orderId);
     if (!order) throw new NotFoundException();
-    console.log(payload)
 
     const cash = await this.cashService.findOneByBranch(payload);
     if (!cash) throw new NotFoundException();
