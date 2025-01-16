@@ -9,6 +9,8 @@ import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { UserService } from '../user/user.service';
 import { SupplierService } from '../supplier/supplier.service';
 import { ConfigService } from '@nestjs/config';
+import { PayloadDto } from '../auth/dto/payload.dto';
+import { BranchService } from '../branch/branch.service';
 
 @Injectable()
 export class ExpenseService {
@@ -20,36 +22,44 @@ export class ExpenseService {
     private readonly supplierService: SupplierService,
     private readonly cashService: CashService,
     private readonly configService: ConfigService,
+    private readonly branchService: BranchService,
   ) {}
 
   cashId = this.configService.get<string>('CAJA_ID');
 
-  async create(createExpenseDto: CreateExpenseDto) {
-    const cash = await this.cashService.findOneById(this.cashId);
+  async create(createExpenseDto: CreateExpenseDto, payload: PayloadDto) {
+    const cash = await this.cashService.findOneByBranch(payload);
     if (!cash) throw new NotFoundException();
 
-    cash.main = parseFloat((Number(cash.main) - createExpenseDto.amount).toFixed(2))
-
     if (
-      new Date(createExpenseDto.date).toDateString() ===
-      new Date().toDateString()
-    ) {
-      cash.outflows = parseFloat((Number(cash.outflows) + createExpenseDto.amount).toFixed(2))
+      new Date(createExpenseDto.date).getTime() <=
+      new Date(cash.branch.lockDate).getTime()
+    ) throw new NotFoundException('Can not create expenses in locked dates');
+
+    if (!createExpenseDto.secondary) {
+      cash.main = parseFloat((Number(cash.main) - Number(createExpenseDto.amount)).toFixed(2))
+    } else {
+      cash.secondary = parseFloat((Number(cash.secondary) - Number(createExpenseDto.amount)).toFixed(2))
     }
 
-    await this.cashService.update(this.cashId, cash);
+    await this.cashService.update(cash.id, cash);
 
     const expense = await this.expenseRepository.create({
       ...createExpenseDto,
     });
 
-    // gasto.usuario = await this.usuarioService.findOneById(
-    //   createGastoDto.idUsuario,
-    // );
+
+
+
+    expense.user = await this.userService.findOneById(
+      payload.sub,
+    );
     expense.supplier = await this.supplierService.findOneById(
       createExpenseDto.supplierId,
     );
-    //gasto.caja = caja;
+    expense.branch = await this.branchService.findOneById(
+      payload.branch,
+    );
 
     return await this.expenseRepository.save(expense);
   }
@@ -66,7 +76,7 @@ export class ExpenseService {
   async findBySupplier(id:string) {
     return await this.expenseRepository.find({
       where: {
-        supplier: { id: id}
+        supplier: { id}
       },
       relations: { supplier: true },
       select: {

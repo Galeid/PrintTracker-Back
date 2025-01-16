@@ -6,28 +6,34 @@ import {
   Patch,
   Param,
   Delete,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 
 import { ExpenseService } from './expense.service';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { PayloadDto } from '../auth/dto/payload.dto';
 
 @Controller('expenses')
 export class ExpenseController {
   constructor(private readonly expenseService: ExpenseService) {}
 
   @Post()
-  create(@Body() createExpenseDto: CreateExpenseDto) {
-    return this.expenseService.create(createExpenseDto);
+  @UseGuards(AuthGuard)
+  create(@Body() createExpenseDto: CreateExpenseDto, @Request() request) {
+    return this.expenseService.create(createExpenseDto, request.payload as PayloadDto);
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   findAll() {
     return this.expenseService.findAll();
   }
 
-  @Get('proveedor/:id')
-  findByProveedor(@Param('id') id: string) {
+  @Get('supplier/:id')
+  findBySupplier(@Param('id') id: string) {
     return this.expenseService.findBySupplier(id);
   }
 

@@ -3,5 +3,6 @@ export class CreateExpenseDto {
   amount: number;
   noInvoice?: string;
   date: Date;
+  secondary: boolean;
   supplierId: string;
 }
